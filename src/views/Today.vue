@@ -5,18 +5,17 @@
     <input type="text" name="location" v-model="location">
     <input type="button" value="Set Zip Code" v-on:click="getWeather">
     <p>{{ description }}</p>
-    <p>{{ currentWeather }}&deg;F</p>
-    <p>{{ todayHigh }}&deg;F</p>
-    <p>{{ todayLow }}&deg;F</p>
-    <p>{{ humidity }}%</p>
+    <p>Currently: {{ currentWeather }}</p>
+    <p>Today's High: {{ todayHigh }}</p>
+    <p>Today's Low: {{ todayLow }}</p>
+    <p>Today's Humidity: {{ humidity }}</p>
 
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-const dotenv = require('dotenv')
-dotenv.config()
+require('dotenv').config()
 
 export default {
   name: 'Today',
@@ -32,17 +31,15 @@ export default {
   },
   methods: {
     getWeather() {
-      let wk = process.env.WEATHER_KEY
-      console.log(wk)
+      let wk = process.env.VUE_APP_WEATHER_KEY
       let x = `https://api.openweathermap.org/data/2.5/weather?zip=${this.location}&units=imperial&appid=${wk}`
-      console.log(x)
       axios.get(x) 
         .then(res => (
           this.description = res.data.weather[0].description,
-          this.currentWeather = Math.round(res.data.main.temp),
-          this.todayHigh = Math.round(res.data.main.temp_max),
-          this.todayLow = Math.round(res.data.main.temp_min),
-          this.humidity = Math.round(res.data.main.humidity)
+          this.currentWeather = `${Math.round(res.data.main.temp)}${String.fromCharCode(176)}F`,
+          this.todayHigh = `${Math.round(res.data.main.temp_max)}${String.fromCharCode(176)}F`,
+          this.todayLow = `${Math.round(res.data.main.temp_min)}${String.fromCharCode(176)}F`,
+          this.humidity = `${Math.round(res.data.main.humidity)}${String.fromCharCode(37)}`
           ))
     } 
   }
