@@ -1,9 +1,7 @@
 <template>
   <div class="about">
     <h1>This is today's weather</h1>
-    <label for="location">Location: </label>
-    <input type="text" placeholder="Enter Zip or City, State" name="location" v-model="location">
-    <input type="button" value="Get My Weather" v-on:click="getWeather">
+    <SearchLocation v-on:set-location="setLocation"/>
     <img :src="icon" alt=""><p>{{ description }}</p>
     <p>Currently: {{ currentWeather }}</p>
     <p>Today's High: {{ todayHigh }}</p>
@@ -15,10 +13,14 @@
 <script>
 import axios from 'axios'
 import { convertState } from '../../stateCodes'
+import SearchLocation from '../components/SearchLocation'
 require('dotenv').config()
 
 export default {
   name: 'Today',
+  components: {
+    SearchLocation
+  },
   data() {
     return {
       icon: null,
@@ -33,6 +35,10 @@ export default {
     }
   },
   methods: {
+    setLocation(zip) {
+      this.$data.location = zip
+      this.getWeather()
+    },
     capitalizeState(state) {
       return state.charAt(0).toUpperCase() + state.slice(1)
     },
