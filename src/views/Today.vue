@@ -45,19 +45,22 @@ export default {
     getWeather() {
       let wk = process.env.VUE_APP_WEATHER_KEY
       let location = this.location
+      let that = this
       if(location != null) {
       if(!isNaN(location)){
         let x = `https://api.openweathermap.org/data/2.5/weather?zip=${this.location}&units=imperial&appid=${wk}`
         axios.get(x) 
-          .then(res => (
-            this.description = res.data.weather[0].description,
-            this.currentWeather = `${Math.round(res.data.main.temp)}${String.fromCharCode(176)}F`,
-            this.todayHigh = `${Math.round(res.data.main.temp_max)}${String.fromCharCode(176)}F`,
-            this.todayLow = `${Math.round(res.data.main.temp_min)}${String.fromCharCode(176)}F`,
-            this.humidity = `${Math.round(res.data.main.humidity)}${String.fromCharCode(37)}`,
-            this.icon = `http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`
-          ))
-      } 
+          .then(function(res) {
+              that.description = res.data.weather[0].description,
+              that.currentWeather = `${Math.round(res.data.main.temp)}${String.fromCharCode(176)}F`,
+              that.todayHigh = `${Math.round(res.data.main.temp_max)}${String.fromCharCode(176)}F`,
+              that.todayLow = `${Math.round(res.data.main.temp_min)}${String.fromCharCode(176)}F`,
+              that.humidity = `${Math.round(res.data.main.humidity)}${String.fromCharCode(37)}`,
+              that.icon = `http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`
+            }
+          ) 
+      }
+
       else if(isNaN(location)) {
         let city = location.split(', ', 2)
         this.city = city[0]
@@ -69,7 +72,6 @@ export default {
           this.state = `US-${state}`
         }
         let x = `https://api.openweathermap.org/data/2.5/weather?q=${this.city},${this.state}&units=imperial&appid=${wk}`
-        console.log(x)
         axios.get(x) 
           .then(res => (
             this.description = res.data.weather[0].description,
